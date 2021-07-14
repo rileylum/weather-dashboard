@@ -1,6 +1,6 @@
 
 var cityName = 'adelaide'
-var apiKey = '8d20771314feba21a1dc624717e99f62'
+var apiKey
 
 async function getCityLatLong(city) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
