@@ -29,7 +29,7 @@ var fakeData = {
     }
 };
 
-function createCurrentForecast(cityName, data) {
+function createCurrentForecast() {
     var currentForecastElem = document.createElement('div');
 
     var headerElem = document.createElement('h2');
@@ -38,11 +38,11 @@ function createCurrentForecast(cityName, data) {
     var humidityElem = document.createElement('p');
     var uvIndexElem = document.createElement('p');
 
-    headerElem.textContent = cityName + data.current.dt + data.current.weather[0].main;
-    tempElem.textContent = data.current.temp;
-    windElem.textContent = data.current.wind_speed;
-    humidityElem.textContent = data.current.humidity;
-    uvIndexElem.textContent = data.current.uvi;
+    headerElem.innerHTML = "<span id='header'></span>";
+    tempElem.innerHTML = "Temp: <span id='temp'></span>&#8451;";
+    windElem.innerHTML = "Wind: <span id='wind'></span> m/s";
+    humidityElem.innerHTML = "Humidity: <span id='humidity'></span>%";
+    uvIndexElem.innerHTML = "UV Index: <span id='uv'></span>";
 
     currentForecastElem.appendChild(headerElem);
     currentForecastElem.appendChild(tempElem);
@@ -53,8 +53,24 @@ function createCurrentForecast(cityName, data) {
     document.querySelector('#forecast').appendChild(currentForecastElem);
 }
 
+function fillCurrentForecast(cityName, data) {
 
-createCurrentForecast('Texarkana', fakeData);
+    var headerElem = document.querySelector('#header');
+    var tempElem = document.querySelector('#temp');
+    var windElem = document.querySelector('#wind');
+    var humidityElem = document.querySelector('#humidity');
+    var uvIndexElem = document.querySelector('#uv');
+
+    headerElem.textContent = cityName + data.current.dt + data.current.weather[0].main;
+    tempElem.textContent = data.current.temp;
+    windElem.textContent = data.current.wind_speed;
+    humidityElem.textContent = data.current.humidity;
+    uvIndexElem.textContent = data.current.uvi;
+}
+
+
+createCurrentForecast();
+fillCurrentForecast('Texarkana', fakeData);
 // example get request for adelaide weather
 // fetch('https://api.openweathermap.org/data/2.5/weather?q=adelaide&appid=8d20771314feba21a1dc624717e99f62').then(function(response){return response.json();}).then(function(data){console.log(data);})
 
