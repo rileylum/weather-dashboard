@@ -1,11 +1,12 @@
 
-var cityName = 'adelaide'
+var cityName = 'canberra'
 var apiKey = '8d20771314feba21a1dc624717e99f62'
 
 async function getCityLatLong(city) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
     const response = await fetch(requestUrl);
     const predict = await response.json();
+    cityName = predict.name;
     return predict;
 };
 
@@ -62,11 +63,18 @@ function fillCurrentForecast(data) {
     var humidityElem = document.querySelector('#humidity');
     var uvIndexElem = document.querySelector('#uv');
 
-    headerElem.textContent = "cityName" + data.current.dt + data.current.weather[0].main;
+    headerElem.textContent += cityName + data.current.dt + data.current.weather[0].main;
     tempElem.textContent = data.current.temp;
     windElem.textContent = data.current.wind_speed;
     humidityElem.textContent = data.current.humidity;
     uvIndexElem.textContent = data.current.uvi;
+    if (data.current.uvi <= 2) {
+        uvIndexElem.classList = "rounded bg-success text-white px-2";
+    } else if (data.current.ubi <= 5) {
+        uvIndexElem.classList = "rounded bg-warning text-white px-2";
+    } else {
+        uvIndexElem.classList = "rounded bg-danger text-white px-2";
+    };
 };
 
 
