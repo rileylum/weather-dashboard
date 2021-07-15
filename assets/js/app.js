@@ -1,13 +1,20 @@
 
-var cityName = 'houston'
+var cityName = 'atlana'
 var apiKey = '8d20771314feba21a1dc624717e99f62'
+
+var searchBtn = document.querySelector('#citySearch');
 
 async function getCityLatLong(city) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
     const response = await fetch(requestUrl);
     const predict = await response.json();
     cityName = predict.name;
-    return predict;
+    // if the request is an error predict.cod will exist
+    // so we don't return anything which breaks the getData chain
+    // otherwise predict is returned and the getData function continues
+    if (!predict.cod) {
+        return predict;
+    }
 };
 
 async function getWeatherData(coords) {
@@ -17,19 +24,21 @@ async function getWeatherData(coords) {
     return predict;
 };
 
-function getData() {
-    getCityLatLong(cityName)
+function getData(cityInput) {
+    getCityLatLong(cityInput)
         .then(function (coords) {
-            getWeatherData(coords)
-                .then(function (data) {
-                    console.log(data);
-                    fillCurrentForecast(data);
-                });
+            if (coords) {
+                getWeatherData(coords);
+            }
+        })
+        .then(function (data) {
+            if (data) {
+                console.log(data);
+                fillCurrentForecast(data);
+                fillPredictForecast(data);
+            }
         });
 };
-
-
-// getData();
 
 function createCurrentForecast() {
     var currentForecastElem = document.createElement('div');
@@ -84,18 +93,18 @@ function createPredictForecast() {
     predictsDiv.classList = 'row justify-content-between';
     predictsDiv.innerHTML = "<h3>5-Day Forecast:</h3>";
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 1; i < 6; i++) {
         var predictElem = document.createElement('div');
-        var headerElem = document.createElement('h2');
+        var headerElem = document.createElement('h4');
         var iconElem = document.createElement('img');
         var tempElem = document.createElement('p');
         var windElem = document.createElement('p');
         var humidityElem = document.createElement('p');
 
-        predictElem.classList = "col-2"
+        predictElem.classList = "col-6 col-md-4 col-lg-2"
 
         headerElem.innerHTML = "<span id='header-" + i + "'></span>"
-        iconElem.innerHTML = "<img id='icon-" + i + "'>";
+        iconElem.setAttribute('id', 'icon-' + i);
         tempElem.innerHTML = "Temp: <span id='temp-" + i + "'></span>&#8451;";
         windElem.innerHTML = "Wind: <span id='wind-" + i + "'></span> m/s";
         humidityElem.innerHTML = "Humidity: <span id='humidity-" + i + "'></span>%";
@@ -112,9 +121,26 @@ function createPredictForecast() {
     document.querySelector('#forecast').appendChild(predictsDiv);
 }
 
+function fillPredictForecast(data) {
+    for (var i = 1; i < 6; i++) {
+        var headerElem = document.querySelector('#header-' + i);
+        var weatherImg = document.querySelector('#icon-' + i);
+        var tempElem = document.querySelector('#temp-' + i);
+        var windElem = document.querySelector('#wind-' + i);
+        var humidityElem = document.querySelector('#humidity-' + i);
+
+        headerElem.textContent += dayjs(data.daily[i].dt * 1000).format('DD/MM/YYYY')
+        weatherImg.setAttribute('src', "http://openweathermap.org/img/wn/" + data.daily[i].weather[0].icon + ".png");
+        tempElem.textContent = data.daily[i].temp.day;
+        windElem.textContent = data.daily[i].wind_speed;
+        humidityElem.textContent = data.daily[i].humidity;
+    }
+};
+
 
 createCurrentForecast();
 createPredictForecast();
+getData(cityName);
 
 
 
