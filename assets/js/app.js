@@ -11,7 +11,7 @@ async function getCityLatLong(city) {
 };
 
 async function getWeatherData(coords) {
-    var requestUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + coords.coord.lat + "&lon=" + coords.coord.lon + "&appid=" + apiKey;
+    var requestUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + coords.coord.lat + "&lon=" + coords.coord.lon + "&units=metric&appid=" + apiKey;
     const response = await fetch(requestUrl);
     const predict = await response.json();
     return predict;
@@ -29,7 +29,7 @@ function getData() {
 };
 
 
-getData();
+// getData();
 
 function createCurrentForecast() {
     var currentForecastElem = document.createElement('div');
@@ -63,7 +63,7 @@ function fillCurrentForecast(data) {
     var humidityElem = document.querySelector('#humidity');
     var uvIndexElem = document.querySelector('#uv');
 
-    headerElem.textContent += cityName + data.current.dt + data.current.weather[0].main;
+    headerElem.textContent += cityName + " (" + dayjs(data.current.dt * 1000).format('DD/MM/YYYY') + ") " + data.current.weather[0].main;
     tempElem.textContent = data.current.temp;
     windElem.textContent = data.current.wind_speed;
     humidityElem.textContent = data.current.humidity;
