@@ -1,5 +1,5 @@
 
-var cityName = 'canberra'
+var cityName = 'houston'
 var apiKey = '8d20771314feba21a1dc624717e99f62'
 
 async function getCityLatLong(city) {
@@ -40,11 +40,11 @@ function createCurrentForecast() {
     var humidityElem = document.createElement('p');
     var uvIndexElem = document.createElement('p');
 
-    headerElem.innerHTML = "<span id='header'></span>";
-    tempElem.innerHTML = "Temp: <span id='temp'></span>&#8451;";
-    windElem.innerHTML = "Wind: <span id='wind'></span> m/s";
-    humidityElem.innerHTML = "Humidity: <span id='humidity'></span>%";
-    uvIndexElem.innerHTML = "UV Index: <span id='uv'></span>";
+    headerElem.innerHTML = "<span id='header-main'></span><img id='icon-main'>";
+    tempElem.innerHTML = "Temp: <span id='temp-main'></span>&#8451;";
+    windElem.innerHTML = "Wind: <span id='wind-main'></span> m/s";
+    humidityElem.innerHTML = "Humidity: <span id='humidity-main'></span>%";
+    uvIndexElem.innerHTML = "UV Index: <span id='uv-main'></span>";
 
     currentForecastElem.appendChild(headerElem);
     currentForecastElem.appendChild(tempElem);
@@ -57,13 +57,15 @@ function createCurrentForecast() {
 
 function fillCurrentForecast(data) {
 
-    var headerElem = document.querySelector('#header');
-    var tempElem = document.querySelector('#temp');
-    var windElem = document.querySelector('#wind');
-    var humidityElem = document.querySelector('#humidity');
-    var uvIndexElem = document.querySelector('#uv');
+    var headerElem = document.querySelector('#header-main');
+    var weatherImg = document.querySelector('#icon-main');
+    var tempElem = document.querySelector('#temp-main');
+    var windElem = document.querySelector('#wind-main');
+    var humidityElem = document.querySelector('#humidity-main');
+    var uvIndexElem = document.querySelector('#uv-main');
 
-    headerElem.textContent += cityName + " (" + dayjs(data.current.dt * 1000).format('DD/MM/YYYY') + ") " + data.current.weather[0].main;
+    headerElem.textContent += cityName + " (" + dayjs(data.current.dt * 1000).format('DD/MM/YYYY') + ") ";
+    weatherImg.setAttribute('src', "http://openweathermap.org/img/wn/" + data.current.weather[0].icon + "@2x.png");
     tempElem.textContent = data.current.temp;
     windElem.textContent = data.current.wind_speed;
     humidityElem.textContent = data.current.humidity;
@@ -77,8 +79,42 @@ function fillCurrentForecast(data) {
     };
 };
 
+function createPredictForecast() {
+    var predictsDiv = document.createElement('div');
+    predictsDiv.classList = 'row justify-content-between';
+    predictsDiv.innerHTML = "<h3>5-Day Forecast:</h3>";
+
+    for (var i = 0; i < 5; i++) {
+        var predictElem = document.createElement('div');
+        var headerElem = document.createElement('h2');
+        var iconElem = document.createElement('img');
+        var tempElem = document.createElement('p');
+        var windElem = document.createElement('p');
+        var humidityElem = document.createElement('p');
+
+        predictElem.classList = "col-2"
+
+        headerElem.innerHTML = "<span id='header-" + i + "'></span>"
+        iconElem.innerHTML = "<img id='icon-" + i + "'>";
+        tempElem.innerHTML = "Temp: <span id='temp-" + i + "'></span>&#8451;";
+        windElem.innerHTML = "Wind: <span id='wind-" + i + "'></span> m/s";
+        humidityElem.innerHTML = "Humidity: <span id='humidity-" + i + "'></span>%";
+
+        predictElem.appendChild(headerElem);
+        predictElem.appendChild(iconElem);
+        predictElem.appendChild(tempElem);
+        predictElem.appendChild(windElem);
+        predictElem.appendChild(humidityElem);
+
+        predictsDiv.appendChild(predictElem);
+    }
+
+    document.querySelector('#forecast').appendChild(predictsDiv);
+}
+
 
 createCurrentForecast();
+createPredictForecast();
 
 
 
