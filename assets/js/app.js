@@ -4,6 +4,7 @@ var apiKey = '8d20771314feba21a1dc624717e99f62'
 
 var searchBtn = document.querySelector('#citySearchBtn');
 var searchInput = document.querySelector('#citySearch');
+var savedSearches = document.querySelector('#savedSearches');
 
 async function getCityLatLong(city) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
@@ -43,6 +44,8 @@ function getData(cityInput) {
 
 function createCurrentForecast() {
     var currentForecastElem = document.createElement('div');
+
+    document.querySelector('#forecast').innerHTML = "";
 
     var headerElem = document.createElement('h2');
     var tempElem = document.createElement('p');
@@ -138,22 +141,38 @@ function fillPredictForecast(data) {
     }
 };
 
+function createSavedSearch() {
+    var savedSearchBtn = document.createElement('button');
+    savedSearchBtn.classList = "btn btn-secondary w-100 mb-3";
+    savedSearchBtn.setAttribute('type', 'submit');
+    savedSearchBtn.setAttribute('data-search', searchInput.value);
+    savedSearchBtn.textContent = searchInput.value;
+    savedSearches.appendChild(savedSearchBtn);
+}
+
 searchBtn.addEventListener('click', function (e) {
     e.preventDefault();
     createCurrentForecast();
     createPredictForecast();
-    var savedSearchBtn = document.createElement('button');
-    savedSearchBtn.classList = "btn btn-secondary w-100";
-    savedSearchBtn.setAttribute('type', 'submit');
-    savedSearchBtn.setAttribute('data-search', searchInput.value);
-    savedSearchBtn.textContent = searchInput.value;
+    createSavedSearch();
+
     // getData(searchInput.value);
 });
 
-console.log(searchBtn);
+savedSearches.addEventListener('click', function (e) {
+    e.preventDefault
+    if (e.target.nodeName === "BUTTON") {
+        console.log('hello');
+        createCurrentForecast();
+        createPredictForecast();
+        getData(e.target.getAttribute('data-search'));
+    };
+})
+
 
 
 // getData(cityName);
+
 
 
 
