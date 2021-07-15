@@ -2,7 +2,8 @@
 var cityName = 'atlana'
 var apiKey = '8d20771314feba21a1dc624717e99f62'
 
-var searchBtn = document.querySelector('#citySearch');
+var searchBtn = document.querySelector('#citySearchBtn');
+var searchInput = document.querySelector('#citySearch');
 
 async function getCityLatLong(city) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
@@ -12,12 +13,13 @@ async function getCityLatLong(city) {
     // if the request is an error predict.cod will exist
     // so we don't return anything which breaks the getData chain
     // otherwise predict is returned and the getData function continues
-    if (!predict.cod) {
+    if (predict.cod === 200) {
         return predict;
     }
 };
 
 async function getWeatherData(coords) {
+
     var requestUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + coords.coord.lat + "&lon=" + coords.coord.lon + "&units=metric&appid=" + apiKey;
     const response = await fetch(requestUrl);
     const predict = await response.json();
@@ -28,12 +30,11 @@ function getData(cityInput) {
     getCityLatLong(cityInput)
         .then(function (coords) {
             if (coords) {
-                getWeatherData(coords);
+                return getWeatherData(coords);
             }
         })
         .then(function (data) {
             if (data) {
-                console.log(data);
                 fillCurrentForecast(data);
                 fillPredictForecast(data);
             }
@@ -137,10 +138,22 @@ function fillPredictForecast(data) {
     }
 };
 
+searchBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    createCurrentForecast();
+    createPredictForecast();
+    var savedSearchBtn = document.createElement('button');
+    savedSearchBtn.classList = "btn btn-secondary w-100";
+    savedSearchBtn.setAttribute('type', 'submit');
+    savedSearchBtn.setAttribute('data-search', searchInput.value);
+    savedSearchBtn.textContent = searchInput.value;
+    // getData(searchInput.value);
+});
 
-createCurrentForecast();
-createPredictForecast();
-getData(cityName);
+console.log(searchBtn);
+
+
+// getData(cityName);
 
 
 
