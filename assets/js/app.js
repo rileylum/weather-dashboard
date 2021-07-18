@@ -17,13 +17,13 @@ function getSearches() {
         savedSearches = storedSearches;
         drawSavedSearches();
     }
-}
+};
 
 function drawSavedSearches() {
     for (var i = 0; i < savedSearches.length; i++) {
         createSavedSearch(savedSearches[i]);
     }
-}
+};
 
 async function getCityLatLong(city) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
@@ -63,6 +63,8 @@ function getData(cityInput) {
 
 function createCurrentForecast() {
     var currentForecastElem = document.createElement('div');
+
+    currentForecastElem.classList = "border border-primary border-1 px-3 mb-3"
 
     document.querySelector('#forecast').innerHTML = "";
 
@@ -113,7 +115,7 @@ function fillCurrentForecast(data) {
 
 function createPredictForecast() {
     var predictsDiv = document.createElement('div');
-    predictsDiv.classList = 'row justify-content-between';
+    predictsDiv.classList = 'row justify-content-evenly px-3';
     predictsDiv.innerHTML = "<h3>5-Day Forecast:</h3>";
 
     for (var i = 1; i < 6; i++) {
@@ -124,7 +126,7 @@ function createPredictForecast() {
         var windElem = document.createElement('p');
         var humidityElem = document.createElement('p');
 
-        predictElem.classList = "col-6 col-md-4 col-lg-2"
+        predictElem.classList = "col-6 col-lg-3 col-xl-2 bg-dark text-white rounded-3 m-2 p-2"
 
         headerElem.innerHTML = "<span id='header-" + i + "'></span>"
         iconElem.setAttribute('id', 'icon-' + i);
