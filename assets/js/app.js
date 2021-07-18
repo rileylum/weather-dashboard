@@ -1,10 +1,28 @@
-
-var cityName = 'atlana'
+// Secret Openweather API Key
 var apiKey = '8d20771314feba21a1dc624717e99f62'
 
 var searchBtn = document.querySelector('#citySearchBtn');
 var searchInput = document.querySelector('#citySearch');
-var savedSearches = document.querySelector('#savedSearches');
+var savedSearchesDiv = document.querySelector('#savedSearches');
+
+var savedSearches;
+var storedSearches;
+
+function getSearches() {
+    storedSearches = JSON.parse(localStorage.getItem('searches'));
+    if (!storedSearches) {
+        savedSearches = [];
+    } else {
+        savedSearches = storedSearches;
+        drawSavedSearches();
+    }
+}
+
+function drawSavedSearches() {
+    for (var i = 0; i < savedSearches.length; i++) {
+        createSavedSearch(savedSearches[i]);
+    }
+}
 
 async function getCityLatLong(city) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
@@ -141,25 +159,29 @@ function fillPredictForecast(data) {
     }
 };
 
-function createSavedSearch() {
+function createSavedSearch(searchString) {
     var savedSearchBtn = document.createElement('button');
     savedSearchBtn.classList = "btn btn-secondary w-100 mb-3";
     savedSearchBtn.setAttribute('type', 'submit');
-    savedSearchBtn.setAttribute('data-search', searchInput.value);
-    savedSearchBtn.textContent = searchInput.value;
-    savedSearches.appendChild(savedSearchBtn);
+    savedSearchBtn.setAttribute('data-search', searchString);
+    savedSearchBtn.textContent = searchString[0].toUpperCase() + searchString.substring(1);
+    savedSearchesDiv.appendChild(savedSearchBtn);
 }
 
 searchBtn.addEventListener('click', function (e) {
+    var searchVal = searchInput.value.toLowerCase();
     e.preventDefault();
     createCurrentForecast();
     createPredictForecast();
-    createSavedSearch();
-
-    // getData(searchInput.value);
+    if (!savedSearches.includes(searchVal)) {
+        savedSearches.push(searchVal);
+        localStorage.setItem('searches', JSON.stringify(savedSearches));
+        createSavedSearch(searchVal);
+    };
+    getData(searchVal);
 });
 
-savedSearches.addEventListener('click', function (e) {
+savedSearchesDiv.addEventListener('click', function (e) {
     e.preventDefault
     if (e.target.nodeName === "BUTTON") {
         console.log('hello');
@@ -171,8 +193,5 @@ savedSearches.addEventListener('click', function (e) {
 
 
 
-// getData(cityName);
-
-
-
+getSearches();
 
