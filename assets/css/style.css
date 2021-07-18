@@ -1,12 +1,22 @@
+/* set custom styling for gradient values in bootstrap */
 :root {
     --bs-gradient: linear-gradient(90deg, rgba(50, 0, 255, 1), rgba(100, 0, 255, 1));
 }
 
-
+/* make elements take up full screen on screensizes larger than 768px */
 @media screen and (min-width: 768px) {
-    .mySidebar {
-        min-height: 100vh;
+    body {
         height: 100vh;
+    }
+    header {
+        height: 10%;
+    }
+    
+    main {
+        height:91%;
+    }
+    .mySidebar {
+        height: 100%;
         height: -webkit-fill-available;
     }
 }

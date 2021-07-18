@@ -1,14 +1,14 @@
 // Secret Openweather API Key
 var apiKey = '8d20771314feba21a1dc624717e99f62'
-
+// get DOM elements
 var searchBtn = document.querySelector('#citySearchBtn');
 var searchInput = document.querySelector('#citySearch');
 var savedSearchesDiv = document.querySelector('#savedSearches');
 var resetSaves = document.querySelector('#resetSaved')
-
+// variables to enable localStorage
 var savedSearches;
 var storedSearches;
-
+// gets search info from localStorage if it exists
 function getSearches() {
     storedSearches = JSON.parse(localStorage.getItem('searches'));
     if (!storedSearches) {
@@ -18,13 +18,13 @@ function getSearches() {
         drawSavedSearches();
     }
 };
-
+// adds saved searches to the DOM as buttons
 function drawSavedSearches() {
     for (var i = 0; i < savedSearches.length; i++) {
         createSavedSearch(savedSearches[i]);
     }
 };
-
+// gets lat and long values for a city name to be used in another API to get weather predict
 async function getCityLatLong(city) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
     const response = await fetch(requestUrl);
@@ -35,9 +35,11 @@ async function getCityLatLong(city) {
     // otherwise predict is returned and the getData function continues
     if (predict.cod === 200) {
         return predict;
+    } else {
+        showError(predict.cod);
     }
 };
-
+// get weather predict based on lat long information
 async function getWeatherData(coords) {
 
     var requestUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + coords.coord.lat + "&lon=" + coords.coord.lon + "&units=metric&appid=" + apiKey;
@@ -45,7 +47,8 @@ async function getWeatherData(coords) {
     const predict = await response.json();
     return predict;
 };
-
+// calls functions in order, waiting for each to finish before executing the next
+// gets weather data and then displays it on the DOM, also creates saved search data
 function getData(cityInput) {
     getCityLatLong(cityInput)
         .then(function (coords) {
@@ -55,12 +58,30 @@ function getData(cityInput) {
         })
         .then(function (data) {
             if (data) {
+                createCurrentForecast();
+                createPredictForecast();
+                if (!savedSearches.includes(cityInput)) {
+                    savedSearches.push(cityInput);
+                    localStorage.setItem('searches', JSON.stringify(savedSearches));
+                    createSavedSearch(cityInput);
+                };
                 fillCurrentForecast(data);
                 fillPredictForecast(data);
             }
         });
 };
 
+// creates an error message for incorrect user input
+function showError(errorCode) {
+    console.log(errorCode);
+    if (errorCode === '400' || errorCode === '404') {
+        window.alert("Error Code: " + errorCode + ". User Input is incorrect, please make sure you enter a correct City Name.")
+    } else {
+        window.alert("Error Code: " + errorCode + ". Unknown Error, please try again later.")
+    }
+}
+
+// creates elements needed to house current weather data
 function createCurrentForecast() {
     var currentForecastElem = document.createElement('div');
 
@@ -88,7 +109,7 @@ function createCurrentForecast() {
 
     document.querySelector('#forecast').appendChild(currentForecastElem);
 };
-
+// fills HTML DOM elements with the current weather from search
 function fillCurrentForecast(data) {
 
     var headerElem = document.querySelector('#header-main');
@@ -112,7 +133,7 @@ function fillCurrentForecast(data) {
         uvIndexElem.classList = "rounded bg-danger text-white px-2";
     };
 };
-
+// creates HTML DOM elements to house 5day weather predict data
 function createPredictForecast() {
     var predictsDiv = document.createElement('div');
     predictsDiv.classList = 'row justify-content-evenly px-3';
@@ -145,7 +166,7 @@ function createPredictForecast() {
 
     document.querySelector('#forecast').appendChild(predictsDiv);
 }
-
+// fills HTML DOM elements with 5day weather predict data
 function fillPredictForecast(data) {
     for (var i = 1; i < 6; i++) {
         var headerElem = document.querySelector('#header-' + i);
@@ -161,7 +182,8 @@ function fillPredictForecast(data) {
         humidityElem.textContent = data.daily[i].humidity;
     }
 };
-
+// creates a button for each previous unique search, either from local storage on load or
+// as the user searches
 function createSavedSearch(searchString) {
     var savedSearchBtn = document.createElement('button');
     savedSearchBtn.classList = "btn btn-secondary w-100 mb-3";
@@ -170,30 +192,22 @@ function createSavedSearch(searchString) {
     savedSearchBtn.textContent = searchString[0].toUpperCase() + searchString.substring(1);
     savedSearchesDiv.appendChild(savedSearchBtn);
 }
-
+// when the user clicks the search button call getData function with the user input as parameter
 searchBtn.addEventListener('click', function (e) {
     var searchVal = searchInput.value.toLowerCase();
     e.preventDefault();
-    createCurrentForecast();
-    createPredictForecast();
-    if (!savedSearches.includes(searchVal)) {
-        savedSearches.push(searchVal);
-        localStorage.setItem('searches', JSON.stringify(savedSearches));
-        createSavedSearch(searchVal);
-    };
+
     getData(searchVal);
 });
-
+// when the user clicks a button from the saved searches call the getData function with the 
+// original user input as parameter
 savedSearchesDiv.addEventListener('click', function (e) {
     e.preventDefault
     if (e.target.nodeName === "BUTTON") {
-        console.log('hello');
-        createCurrentForecast();
-        createPredictForecast();
         getData(e.target.getAttribute('data-search'));
     };
 })
-
+// when the user clicks the reset save button, clears existing saved searches
 resetSaves.addEventListener('click', function () {
     localStorage.removeItem('searches');
     savedSearches = [];
@@ -201,6 +215,6 @@ resetSaves.addEventListener('click', function () {
 })
 
 
-
+// get saved searches from localStorage on page load
 getSearches();
 

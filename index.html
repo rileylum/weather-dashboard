@@ -6,19 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
+    <!-- include bootstrap style and style.css -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 
 <body>
-
+    <!-- contains header -->
     <div class="container-fluid bg-primary bg-gradient">
         <header class="d-flex justify-content-center py-3">
             <h1 class="text-white">Weather Dashboard</h1>
         </header>
     </div>
+    <!-- contains sidebar and main content -->
     <main class="container-fluid w-100">
+        <!-- contains search elements -->
         <div class="row mySidebar">
             <div class="col-12 col-md-4 col-lg-3 p-3 text-white bg-dark sidebar">
                 <form>
@@ -35,10 +38,12 @@
                         Searches</button>
                 </div>
             </div>
+            <!-- contains HTML generated from JS for weather predicts -->
             <div class="col-12 col-md-8 col-lg-9 my-3" id="forecast"></div>
         </div>
     </main>
 
+    <!-- include bootstrap JS, dayJS and app.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
