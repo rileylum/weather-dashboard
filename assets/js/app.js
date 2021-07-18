@@ -4,6 +4,7 @@ var apiKey = '8d20771314feba21a1dc624717e99f62'
 var searchBtn = document.querySelector('#citySearchBtn');
 var searchInput = document.querySelector('#citySearch');
 var savedSearchesDiv = document.querySelector('#savedSearches');
+var resetSaves = document.querySelector('#resetSaved')
 
 var savedSearches;
 var storedSearches;
@@ -189,6 +190,12 @@ savedSearchesDiv.addEventListener('click', function (e) {
         createPredictForecast();
         getData(e.target.getAttribute('data-search'));
     };
+})
+
+resetSaves.addEventListener('click', function () {
+    localStorage.removeItem('searches');
+    savedSearches = [];
+    savedSearchesDiv.innerHTML = "";
 })
 
 
