@@ -15,6 +15,8 @@ Previous searches will populate the sidebar (and persist between pageloads), sim
 
 The completed website can be viewed at: https://rileylum.github.io/weather-dashboard/
 
+![An animation showing the use of the webapp, searching for cities using input and previous searches.](./assets/img/webapp-gif.gif)
+
 ## Credits
 
 I used the OpenWeatherMap API to get the weather forecast data which can be found here: https://openweathermap.org/
