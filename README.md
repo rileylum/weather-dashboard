@@ -3,7 +3,7 @@
 ## Description
 A webapp that displays weather data for your city!
 
-In this project I have used bootstrap to style the page, OepnWeatherAPI and Javascript to dynamically generate the content (including using localStorage to have saved data persist between page refreshes) and DayJS to get the current time.
+In this project I have used bootstrap to style the page, OpenWeatherAPI and Javascript to dynamically generate the content (including using localStorage to have saved data persist between page refreshes) and DayJS to get the current time.
 
 ![The weather app includes a search option, a list of cities, and a five-day forecast and current weather conditions for Adelaide.](./assets/img/webapp-screengrab.png)
 
